@@ -19,6 +19,10 @@ app.get('/*', (req, res, next) => {
     }
 });
 
+app.get('/api/notes', (req, res) => {
+    res.send(require('./db/db.json'));
+});
+
 
 app.listen(PORT, () => {
     console.log(`Now listening to port ${PORT}`);
