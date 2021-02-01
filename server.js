@@ -27,8 +27,10 @@ app.get('/api/notes', (req, res) => {
 
 
 app.post('/api/notes', (req, res) => {
+    console.log(req)
     req.body.id = getNewID();
     db.push(req.body);
+    console.log(req.body)
     updateDb()? res.status(500).send("Something went wrong, please try again later.") : res.json(req.body);
 });
 
