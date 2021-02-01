@@ -2,7 +2,6 @@ const express = require('express');
 const path = require('path');
 const fs = require('fs');
 const db = require('./db/db.json');
-const { RSA_NO_PADDING } = require('constants');
 
 const app = express();
 var PORT = process.env.PORT || 3000;
@@ -30,10 +29,16 @@ app.get('/api/notes', (req, res) => {
 app.post('/api/notes', (req, res) => {
     req.body.id = getNewID();
     db.push(req.body);
-    fs.writeFile(path.join(__dirname, '/db', 'db.json'), JSON.stringify(db), err=>{
-        err? res.status(500).send("Something went wrong, please try again later.") : res.json(req.body);
-    });
+    updateDb()? res.status(500).send("Something went wrong, please try again later.") : res.json(req.body);
 });
+
+app.delete('/api/notes/:id', (req, res)=>{
+    var toDel = db.find((e)=> e.id == req.params.id);
+    toDel? db.splice(db.indexOf(toDel),1) : null;
+    updateDb()? res.status(500).send("Something went wrong, please try again later.") : res.send(`${toDel.id} was successfully deleted.`);
+})
+
+
 
 app.listen(PORT, () => {
     console.log(`Now listening to port ${PORT}`);
@@ -49,4 +54,11 @@ function getNewID(){
             return newId;
         }
     }
+}
+
+
+function updateDb(){
+    fs.writeFile(path.join(__dirname, '/db', 'db.json'), JSON.stringify(db), err=>{
+        return err;
+    });
 }
