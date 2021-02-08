@@ -27,10 +27,8 @@ app.get('/api/notes', (req, res) => {
 
 
 app.post('/api/notes', (req, res) => {
-    console.log(req)
     req.body.id = getNewID();
     db.push(req.body);
-    console.log(req.body)
     updateDb()? res.status(500).send("Something went wrong, please try again later.") : res.json(req.body);
 });
 
@@ -39,7 +37,6 @@ app.delete('/api/notes/:id', (req, res)=>{
     toDel? db.splice(db.indexOf(toDel),1) : null;
     updateDb()? res.status(500).send("Something went wrong, please try again later.") : res.send(`${toDel.id} was successfully deleted.`);
 })
-
 
 
 app.listen(PORT, () => {
